@@ -1,5 +1,6 @@
 import React from 'react';
 import { AnalysisResult } from '../types';
+import { CheckCircleIcon, XCircleIcon } from './icons';
 
 interface ResultDisplayProps {
     result: AnalysisResult;
@@ -18,8 +19,15 @@ const ResultDisplay: React.FC<ResultDisplayProps> = ({ result, onScanAgain, imag
 
             <div className="text-center">
                 <h2 className="text-2xl font-bold text-gray-900">{itemName}</h2>
-                <div className={`mt-2 text-lg font-semibold ${recyclable === 'Yes' ? 'text-green-600' : 'text-red-600'}`}>
-                    {recyclable === 'Yes' ? 'Recyclable' : 'Not Recyclable'}
+                <div className={`mt-2 text-2xl font-bold flex items-center justify-center ${recyclable === 'Yes' ? 'text-green-700' : 'text-red-700'}`}>
+                    {recyclable === 'Yes' ? (
+                        <CheckCircleIcon className="w-8 h-8 mr-2" />
+                    ) : (
+                        <XCircleIcon className="w-8 h-8 mr-2" />
+                    )}
+                    <span>
+                        {recyclable === 'Yes' ? 'Recyclable' : 'Not Recyclable'}
+                    </span>
                 </div>
             </div>
 

@@ -2,9 +2,11 @@ import React, { useRef } from 'react';
 
 interface ImageUploaderProps {
     onImageUpload: (base64: string, mimeType: string) => void;
+    isLoading?: boolean;
+    imagePreviewUrl?: string | null;
 }
 
-const ImageUploader: React.FC<ImageUploaderProps> = ({ onImageUpload }) => {
+const ImageUploader: React.FC<ImageUploaderProps> = ({ onImageUpload, isLoading = false, imagePreviewUrl }) => {
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -36,8 +38,21 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ onImageUpload }) => {
         fileInputRef.current?.click();
     };
 
+    if (isLoading && imagePreviewUrl) {
+        return (
+            <div className="relative flex flex-col items-center justify-center p-4 border-2 border-dashed border-gray-300 rounded-lg bg-white min-h-[280px]">
+                <img src={imagePreviewUrl} alt="Preview" className="max-h-48 w-auto object-contain rounded-md opacity-40" />
+                <div className="absolute inset-0 bg-white bg-opacity-60 flex flex-col items-center justify-center text-center">
+                    <div className="w-12 h-12 border-4 border-t-green-500 border-gray-200 rounded-full animate-spin"></div>
+                    <p className="mt-4 text-gray-800 font-semibold">Analyzing your item...</p>
+                    <p className="text-sm text-gray-600">This may take a moment.</p>
+                </div>
+            </div>
+        );
+    }
+
     return (
-        <div className="flex flex-col items-center justify-center p-4 border-2 border-dashed border-gray-300 rounded-lg h-full bg-white">
+        <div className="flex flex-col items-center justify-center p-4 border-2 border-dashed border-gray-300 rounded-lg h-full bg-white min-h-[280px]">
             <input
                 type="file"
                 accept="image/*"

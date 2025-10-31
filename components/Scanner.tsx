@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { AnalysisResult, HistoryItem } from '../types';
 import { analyzeImage } from '../services/geminiService';
 import ImageUploader from './ImageUploader';
-import Loader from './Loader';
 import ResultDisplay from './ResultDisplay';
 import TipsCarousel from './TipsCarousel';
 
@@ -46,7 +45,6 @@ const Scanner: React.FC<ScannerProps> = ({ onAddToHistory }) => {
 
     return (
         <div className="relative">
-            {isLoading && <Loader />}
             {error && (
                 <div className="p-4 mb-4 text-sm text-red-800 bg-red-100 rounded-lg" role="alert">
                     <span className="font-medium">Error!</span> {error}
@@ -55,7 +53,11 @@ const Scanner: React.FC<ScannerProps> = ({ onAddToHistory }) => {
             
             {!result && (
                 <div className="space-y-4">
-                    <ImageUploader onImageUpload={handleImageUpload} />
+                    <ImageUploader 
+                        onImageUpload={handleImageUpload} 
+                        isLoading={isLoading} 
+                        imagePreviewUrl={image?.uri} 
+                    />
                     <TipsCarousel />
                 </div>
             )}
