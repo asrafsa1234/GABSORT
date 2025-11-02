@@ -70,49 +70,49 @@ const Map: React.FC = () => {
 
     return (
         <div className="space-y-4">
-            <div className="bg-white rounded-xl shadow-lg p-4">
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4">
                  <div className="flex items-center space-x-3">
                     <SendIcon className="w-6 h-6 text-green-500" />
                     <div>
-                        <h3 className="font-bold text-gray-800">Your Location</h3>
-                        {loading && <p className="text-sm text-gray-500">Fetching location...</p>}
+                        <h3 className="font-bold text-gray-800 dark:text-gray-200">Your Location</h3>
+                        {loading && <p className="text-sm text-gray-500 dark:text-gray-400">Fetching location...</p>}
                         {error && <p className="text-sm font-semibold text-red-500">{error}</p>}
-                        {userLocation && <p className="text-sm text-gray-500">Location access granted</p>}
+                        {userLocation && <p className="text-sm text-gray-500 dark:text-gray-400">Location access granted</p>}
                     </div>
                 </div>
             </div>
 
             <div className="flex justify-between items-center">
-                <h3 className="text-lg font-bold text-gray-700">Recycling Centers</h3>
-                <span className="text-sm font-medium text-gray-500">{sortedCenters.length} found</span>
+                <h3 className="text-lg font-bold text-gray-700 dark:text-gray-300">Recycling Centers</h3>
+                <span className="text-sm font-medium text-gray-500 dark:text-gray-400">{sortedCenters.length} found</span>
             </div>
 
             {loading ? (
-                 <div className="text-center p-8 bg-white rounded-lg shadow-md" role="status">
+                 <div className="text-center p-8 bg-white dark:bg-gray-800 rounded-lg shadow-md" role="status">
                      <div className="w-8 h-8 border-2 border-t-transparent border-green-500 rounded-full animate-spin mx-auto"></div>
                  </div>
             ) : sortedCenters.length > 0 ? (
                 <ul className="space-y-3">
                     {sortedCenters.map((center, index) => (
                         <li key={center.id} 
-                             className="bg-white rounded-xl shadow-md p-4">
+                             className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-4">
                             <div className="flex justify-between items-start">
                                 <div className="flex items-center space-x-4">
-                                     <LocationPinIcon className="w-6 h-6 text-gray-400 flex-shrink-0 mt-1" />
+                                     <LocationPinIcon className="w-6 h-6 text-gray-400 dark:text-gray-500 flex-shrink-0 mt-1" />
                                      <div>
-                                        <h4 className="font-bold text-gray-800">{center.name}</h4>
-                                        <p className="text-xs text-gray-500">{center.address}</p>
+                                        <h4 className="font-bold text-gray-800 dark:text-gray-200">{center.name}</h4>
+                                        <p className="text-xs text-gray-500 dark:text-gray-400">{center.address}</p>
                                     </div>
                                 </div>
                                 <div className="text-right flex-shrink-0 ml-2">
-                                    <p className="font-bold text-green-600">{center.distance?.toFixed(1)} km</p>
+                                    <p className="font-bold text-green-600 dark:text-green-400">{center.distance?.toFixed(1)} km</p>
                                 </div>
                             </div>
                         </li>
                     ))}
                 </ul>
             ) : !error && (
-                 <div className="text-center p-8 text-gray-500 bg-white rounded-lg shadow-md">
+                 <div className="text-center p-8 text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 rounded-lg shadow-md">
                     <p>Could not find any recycling centers near you.</p>
                 </div>
             )}

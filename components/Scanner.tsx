@@ -14,15 +14,31 @@ const SummaryCard: React.FC<{
     Icon: React.FC<{className?: string}>;
     category: string;
     percentage: number;
-    color: string;
+    color: 'green' | 'yellow' | 'red';
 }> = ({ Icon, category, percentage, color }) => {
+    
+    const colorClasses = {
+        green: {
+            bg: 'bg-green-100 dark:bg-green-900/50',
+            text: 'text-green-600 dark:text-green-400'
+        },
+        yellow: {
+            bg: 'bg-yellow-100 dark:bg-yellow-900/50',
+            text: 'text-yellow-600 dark:text-yellow-400'
+        },
+        red: {
+            bg: 'bg-red-100 dark:bg-red-900/50',
+            text: 'text-red-600 dark:text-red-400'
+        }
+    };
+
     return (
-        <div className="bg-white p-4 rounded-2xl shadow-md flex flex-col items-center justify-center text-center">
-            <div className={`w-12 h-12 rounded-full flex items-center justify-center bg-${color}-100`}>
-                <Icon className={`w-6 h-6 text-${color}-600`} />
+        <div className="bg-white dark:bg-gray-700 p-4 rounded-2xl shadow-md flex flex-col items-center justify-center text-center">
+            <div className={`w-12 h-12 rounded-full flex items-center justify-center ${colorClasses[color].bg}`}>
+                <Icon className={`w-6 h-6 ${colorClasses[color].text}`} />
             </div>
-            <p className="text-2xl font-bold mt-2 text-gray-800">{percentage}%</p>
-            <p className="text-xs text-gray-500">{category}</p>
+            <p className="text-2xl font-bold mt-2 text-gray-800 dark:text-gray-200">{percentage}%</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">{category}</p>
         </div>
     )
 }
@@ -91,9 +107,9 @@ const Scanner: React.FC<ScannerProps> = ({ onAddToHistory, history }) => {
     };
 
     return (
-        <div className="relative bg-white rounded-2xl shadow-lg p-4">
+        <div className="relative bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-4">
             {error && (
-                <div className="p-4 mb-4 text-sm text-red-800 bg-red-100 rounded-lg" role="alert">
+                <div className="p-4 mb-4 text-sm text-red-800 bg-red-100 dark:bg-red-900/50 dark:text-red-200 rounded-lg" role="alert">
                     <span className="font-medium">Error!</span> {error}
                 </div>
             )}

@@ -4,6 +4,13 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>EcoSort AI</title>
+    <script>
+      // Configure Tailwind CSS to use the 'class' strategy for dark mode.
+      // This must be done before the main Tailwind script is loaded.
+      tailwind.config = {
+        darkMode: 'class',
+      }
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script type="importmap">
       {
@@ -16,7 +23,7 @@
       }
     </script>
   </head>
-  <body class="bg-gray-100">
+  <body class="bg-gray-100 dark:bg-gray-900">
     <div id="root"></div>
     <script type="module" src="/index.tsx"></script>
   </body>
