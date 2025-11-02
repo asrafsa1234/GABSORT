@@ -1,26 +1,19 @@
 import React, { useState, useEffect } from 'react';
+import { LocationPinIcon, SendIcon } from './icons';
 
-// Define a type for location coordinates
 interface Coordinates {
     lat: number;
     lng: number;
 }
 
-// Define a type for a recycling center
 interface RecyclingCenter {
     id: number;
     name: string;
     address: string;
     coordinates: Coordinates;
-    distance?: number; // Optional distance from user, in kilometers
+    distance?: number;
 }
 
-/**
- * Calculates the Haversine distance between two points on the Earth.
- * @param coords1 - The first coordinates {lat, lng}.
- * @param coords2 - The second coordinates {lat, lng}.
- * @returns The distance in kilometers.
- */
 const getDistance = (coords1: Coordinates, coords2: Coordinates): number => {
     const R = 6371; // Radius of the Earth in km
     const dLat = (coords2.lat - coords1.lat) * (Math.PI / 180);
@@ -30,10 +23,9 @@ const getDistance = (coords1: Coordinates, coords2: Coordinates): number => {
         Math.cos(coords1.lat * (Math.PI / 180)) * Math.cos(coords2.lat * (Math.PI / 180)) *
         Math.sin(dLng / 2) * Math.sin(dLng / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return R * c; // Distance in km
+    return R * c;
 };
 
-// Placeholder data for recycling centers
 const recyclingCentersData: RecyclingCenter[] = [
     { id: 1, name: 'Eco-Friendly Recyclers', address: '123 Green Way, Chennai', coordinates: { lat: 13.0827, lng: 80.2707 } },
     { id: 2, name: 'SIDCO Industrial Estate', address: '26, Thirumazhisai, Chennai, Tamil Nadu 600124', coordinates: { lat: 13.05, lng: 80.05 } },
@@ -60,7 +52,6 @@ const Map: React.FC = () => {
                 const location = { lat: latitude, lng: longitude };
                 setUserLocation(location);
 
-                // Calculate distances and sort centers
                 const centersWithDistance = recyclingCentersData.map(center => ({
                     ...center,
                     distance: getDistance(location, center.coordinates)
@@ -71,66 +62,58 @@ const Map: React.FC = () => {
                 setLoading(false);
             },
             (err) => {
-                setError(`Unable to retrieve your location: ${err.message}. Please enable location services.`);
+                setError(`Location access denied`);
                 setLoading(false);
             }
         );
-    }, []); // Empty dependency array means this runs once on mount
-
-    if (loading) {
-        return (
-            <div className="text-center p-8 bg-white rounded-lg shadow-md" role="status">
-                <p className="text-gray-600">Fetching your location...</p>
-                 <div className="w-8 h-8 border-2 border-t-transparent border-green-500 rounded-full animate-spin mx-auto mt-4" aria-hidden="true"></div>
-            </div>
-        );
-    }
-    
-    if (error) {
-        return (
-             <div className="p-4 text-sm text-red-800 bg-red-100 rounded-lg shadow-md" role="alert">
-                <span className="font-medium">Location Error!</span> {error}
-            </div>
-        );
-    }
+    }, []);
 
     return (
         <div className="space-y-4">
-            {userLocation && (
-                <div className="bg-white rounded-lg shadow-md p-4 text-center">
-                    <h2 className="font-bold text-gray-800">Your Current Location</h2>
-                    <p className="text-sm text-gray-600">
-                        Latitude: <span className="font-mono text-green-600">{userLocation.lat.toFixed(4)}</span>
-                    </p>
-                    <p className="text-sm text-gray-600">
-                        Longitude: <span className="font-mono text-green-600">{userLocation.lng.toFixed(4)}</span>
-                    </p>
+            <div className="bg-white rounded-xl shadow-lg p-4">
+                 <div className="flex items-center space-x-3">
+                    <SendIcon className="w-6 h-6 text-green-500" />
+                    <div>
+                        <h3 className="font-bold text-gray-800">Your Location</h3>
+                        {loading && <p className="text-sm text-gray-500">Fetching location...</p>}
+                        {error && <p className="text-sm font-semibold text-red-500">{error}</p>}
+                        {userLocation && <p className="text-sm text-gray-500">Location access granted</p>}
+                    </div>
                 </div>
-            )}
+            </div>
 
-            <h3 className="text-lg font-bold text-gray-700">Nearby Recycling Centers</h3>
+            <div className="flex justify-between items-center">
+                <h3 className="text-lg font-bold text-gray-700">Recycling Centers</h3>
+                <span className="text-sm font-medium text-gray-500">{sortedCenters.length} found</span>
+            </div>
 
-            {sortedCenters.length > 0 ? (
+            {loading ? (
+                 <div className="text-center p-8 bg-white rounded-lg shadow-md" role="status">
+                     <div className="w-8 h-8 border-2 border-t-transparent border-green-500 rounded-full animate-spin mx-auto"></div>
+                 </div>
+            ) : sortedCenters.length > 0 ? (
                 <ul className="space-y-3">
                     {sortedCenters.map((center, index) => (
                         <li key={center.id} 
-                             className={`bg-white rounded-lg shadow-md p-4 border-l-4 ${index === 0 ? 'border-green-500' : 'border-transparent'}`}>
-                            <div className="flex justify-between items-center">
-                                <div>
-                                    <h4 className="font-bold text-gray-800">{center.name}</h4>
-                                    <p className="text-xs text-gray-500">{center.address}</p>
+                             className="bg-white rounded-xl shadow-md p-4">
+                            <div className="flex justify-between items-start">
+                                <div className="flex items-center space-x-4">
+                                     <LocationPinIcon className="w-6 h-6 text-gray-400 flex-shrink-0 mt-1" />
+                                     <div>
+                                        <h4 className="font-bold text-gray-800">{center.name}</h4>
+                                        <p className="text-xs text-gray-500">{center.address}</p>
+                                    </div>
                                 </div>
-                                <div className="text-right">
-                                    <p className="font-bold text-green-600">{center.distance?.toFixed(2)} km</p>
-                                    <p className="text-xs text-gray-500">away</p>
+                                <div className="text-right flex-shrink-0 ml-2">
+                                    <p className="font-bold text-green-600">{center.distance?.toFixed(1)} km</p>
                                 </div>
                             </div>
                         </li>
                     ))}
                 </ul>
-            ) : (
+            ) : !error && (
                  <div className="text-center p-8 text-gray-500 bg-white rounded-lg shadow-md">
-                    <p>Could not find any recycling centers.</p>
+                    <p>Could not find any recycling centers near you.</p>
                 </div>
             )}
         </div>

@@ -1,4 +1,5 @@
 import React, { useRef } from 'react';
+import { CameraIcon, RecycleIcon } from './icons';
 
 interface ImageUploaderProps {
     onImageUpload: (base64: string, mimeType: string) => void;
@@ -34,50 +35,51 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ onImageUpload, isLoading 
         reader.readAsDataURL(file);
     };
 
-    const handleButtonClick = () => {
+    const handleAreaClick = () => {
         fileInputRef.current?.click();
     };
 
     if (isLoading && imagePreviewUrl) {
         return (
-            <div className="relative flex flex-col items-center justify-center p-4 border-2 border-dashed border-gray-300 rounded-lg bg-white min-h-[280px]">
-                <img src={imagePreviewUrl} alt="Preview" className="max-h-48 w-auto object-contain rounded-md opacity-40" />
-                <div className="absolute inset-0 bg-white bg-opacity-60 flex flex-col items-center justify-center text-center" role="status">
-                    <div className="w-12 h-12 border-4 border-t-green-500 border-gray-200 rounded-full animate-spin" aria-hidden="true"></div>
-                    <p className="mt-4 text-gray-800 font-semibold">Analyzing your item...</p>
-                    <p className="text-sm text-gray-600">This may take a moment.</p>
+            <div className="relative flex flex-col items-center justify-center p-4 border-2 border-dashed border-gray-200 rounded-2xl bg-white min-h-[300px] shadow-sm overflow-hidden">
+                <img src={imagePreviewUrl} alt="Preview" className="max-h-52 w-auto object-contain rounded-lg blur-sm scale-105" />
+                <div className="absolute inset-0 bg-white/60 flex flex-col items-center justify-center text-center p-4" role="status">
+                    <div className="relative flex items-center justify-center w-20 h-20">
+                        <div className="absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75 animate-ping" aria-hidden="true"></div>
+                        <div className="relative inline-flex rounded-full h-16 w-16 bg-green-500 items-center justify-center">
+                            <RecycleIcon className="w-10 h-10 text-white" />
+                        </div>
+                    </div>
+                    <p className="mt-6 text-lg font-semibold text-gray-800 animate-pulse">Analyzing your item...</p>
+                    <p className="text-sm text-gray-600">Our AI is taking a close look.</p>
                 </div>
             </div>
         );
     }
 
     return (
-        <div className="flex flex-col items-center justify-center p-4 border-2 border-dashed border-gray-300 rounded-lg h-full bg-white min-h-[280px]">
+        <>
             <input
                 type="file"
                 accept="image/*"
+                capture="environment"
                 ref={fileInputRef}
                 onChange={handleFileChange}
                 className="hidden"
                 aria-label="Upload Image"
             />
-             <div className="text-center">
-                 <svg className="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
-                    <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
-                 </svg>
-                <h3 className="mt-2 text-sm font-medium text-gray-800">Upload a photo</h3>
-                <p className="mt-1 text-sm text-gray-500">Identify an item to see if it's recyclable.</p>
-                <div className="mt-6">
-                    <button
-                        type="button"
-                        onClick={handleButtonClick}
-                        className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
-                    >
-                        Select Image
-                    </button>
+            <button
+                type="button"
+                onClick={handleAreaClick}
+                className="w-full flex flex-col items-center justify-center p-4 border-2 border-dashed border-gray-300 hover:border-green-400 transition-colors duration-300 rounded-2xl bg-white min-h-[300px] shadow-sm text-center focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+            >
+                <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mb-4">
+                    <CameraIcon className="w-10 h-10 text-green-600" />
                 </div>
-            </div>
-        </div>
+                <h3 className="text-lg font-semibold text-gray-700">Tap to capture or upload</h3>
+                <p className="mt-1 text-sm text-gray-500">Camera Preview</p>
+            </button>
+        </>
     );
 };
 

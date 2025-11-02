@@ -1,15 +1,62 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { AnalysisResult, HistoryItem } from '../types';
 import { analyzeImage } from '../services/geminiService';
 import ImageUploader from './ImageUploader';
 import ResultDisplay from './ResultDisplay';
-import TipsCarousel from './TipsCarousel';
+import { HazardIcon, LeafIcon, RecycleIcon } from './icons';
 
 interface ScannerProps {
     onAddToHistory: (item: Omit<HistoryItem, 'id' | 'timestamp'>) => void;
+    history: HistoryItem[];
 }
 
-const Scanner: React.FC<ScannerProps> = ({ onAddToHistory }) => {
+const SummaryCard: React.FC<{
+    Icon: React.FC<{className?: string}>;
+    category: string;
+    percentage: number;
+    color: string;
+}> = ({ Icon, category, percentage, color }) => {
+    return (
+        <div className="bg-white p-4 rounded-2xl shadow-md flex flex-col items-center justify-center text-center">
+            <div className={`w-12 h-12 rounded-full flex items-center justify-center bg-${color}-100`}>
+                <Icon className={`w-6 h-6 text-${color}-600`} />
+            </div>
+            <p className="text-2xl font-bold mt-2 text-gray-800">{percentage}%</p>
+            <p className="text-xs text-gray-500">{category}</p>
+        </div>
+    )
+}
+
+const Summary: React.FC<{ history: HistoryItem[] }> = ({ history }) => {
+    const stats = useMemo(() => {
+        const total = history.length;
+        if (total === 0) return { recyclable: 0, organic: 0, hazardous: 0 };
+
+        const counts = history.reduce((acc, item) => {
+            const category = item.result.category;
+            if (category === 'Recyclable') acc.recyclable++;
+            else if (category === 'Organic') acc.organic++;
+            else if (category === 'Hazardous') acc.hazardous++;
+            return acc;
+        }, { recyclable: 0, organic: 0, hazardous: 0 });
+
+        return {
+            recyclable: Math.round((counts.recyclable / total) * 100),
+            organic: Math.round((counts.organic / total) * 100),
+            hazardous: Math.round((counts.hazardous / total) * 100),
+        };
+    }, [history]);
+
+    return (
+         <div className="grid grid-cols-3 gap-3">
+            <SummaryCard Icon={RecycleIcon} category="Recyclable" percentage={stats.recyclable} color="green" />
+            <SummaryCard Icon={LeafIcon} category="Organic" percentage={stats.organic} color="yellow" />
+            <SummaryCard Icon={HazardIcon} category="Hazardous" percentage={stats.hazardous} color="red" />
+        </div>
+    )
+}
+
+const Scanner: React.FC<ScannerProps> = ({ onAddToHistory, history }) => {
     const [image, setImage] = useState<{data: string, uri: string} | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [result, setResult] = useState<AnalysisResult | null>(null);
@@ -27,7 +74,7 @@ const Scanner: React.FC<ScannerProps> = ({ onAddToHistory }) => {
             onAddToHistory({
                 image: fullDataUri,
                 result: analysisResult,
-                points: 10,
+                points: Math.round(analysisResult.recyclabilityScore / 10), // Example points logic
             });
         } catch (e: any) {
             console.error(e);
@@ -44,25 +91,25 @@ const Scanner: React.FC<ScannerProps> = ({ onAddToHistory }) => {
     };
 
     return (
-        <div className="relative">
+        <div className="relative bg-white rounded-2xl shadow-lg p-4">
             {error && (
                 <div className="p-4 mb-4 text-sm text-red-800 bg-red-100 rounded-lg" role="alert">
                     <span className="font-medium">Error!</span> {error}
                 </div>
             )}
             
-            {!result && (
+            {!result ? (
                 <div className="space-y-4">
                     <ImageUploader 
                         onImageUpload={handleImageUpload} 
                         isLoading={isLoading} 
                         imagePreviewUrl={image?.uri} 
                     />
-                    <TipsCarousel />
+                    <Summary history={history} />
                 </div>
+            ) : image && (
+                <ResultDisplay result={result} onScanAgain={handleScanAgain} imageUri={image.uri} />
             )}
-
-            {result && image && <ResultDisplay result={result} onScanAgain={handleScanAgain} imageUri={image.uri} />}
         </div>
     );
 };
