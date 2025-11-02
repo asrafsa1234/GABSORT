@@ -10,12 +10,14 @@
       // Wait for Tailwind CDN to fully load before configuring
       (function() {
         function configureTailwind() {
-          if (typeof tailwind !== 'undefined' && tailwind.config) {
-            tailwind.config = {
-              darkMode: 'class',
-              ...tailwind.config
-            };
-            return true;
+          if (typeof tailwind !== 'undefined') {
+            try {
+              tailwind.config = tailwind.config || {};
+              tailwind.config.darkMode = 'class';
+              return true;
+            } catch(e) {
+              console.warn('Tailwind config error:', e);
+            }
           }
           return false;
         }
@@ -25,7 +27,7 @@
           // If not ready, wait a bit and try again
           setTimeout(function() {
             if (!configureTailwind()) {
-              // Try on DOMContentLoaded
+              // Try on DOMContentLoaded as last resort
               document.addEventListener('DOMContentLoaded', configureTailwind);
             }
           }, 100);
