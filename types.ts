@@ -1,6 +1,7 @@
 export interface AnalysisResult {
   itemName: string;
   recyclable: 'Yes' | 'No' | 'Uncertain';
+  category: 'Recyclable' | 'Organic' | 'Hazardous' | 'General Waste';
   recyclabilityScore: number;
   instructions: string;
   alternatives: string[];
