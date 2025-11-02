@@ -4,16 +4,34 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>EcoSort AI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <script>
       // Configure Tailwind CSS to use the 'class' strategy for dark mode.
-      // This must be done before the main Tailwind script is loaded.
-      if (typeof tailwind !== 'undefined') {
-        tailwind.config = {
-          darkMode: 'class',
+      // Wait for Tailwind CDN to fully load before configuring
+      (function() {
+        function configureTailwind() {
+          if (typeof tailwind !== 'undefined' && tailwind.config) {
+            tailwind.config = {
+              darkMode: 'class',
+              ...tailwind.config
+            };
+            return true;
+          }
+          return false;
         }
-      }
+        
+        // Try immediately
+        if (!configureTailwind()) {
+          // If not ready, wait a bit and try again
+          setTimeout(function() {
+            if (!configureTailwind()) {
+              // Try on DOMContentLoaded
+              document.addEventListener('DOMContentLoaded', configureTailwind);
+            }
+          }, 100);
+        }
+      })();
     </script>
-    <script src="https://cdn.tailwindcss.com"></script>
     <script>
       // Diagnostic logging
       console.log('HTML loaded, root element:', document.getElementById('root'));
