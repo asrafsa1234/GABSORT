@@ -4,35 +4,20 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>EcoSort AI</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com" onload="try{tailwind.config={darkMode:'class'}}catch(e){}"></script>
     <script>
       // Configure Tailwind CSS to use the 'class' strategy for dark mode.
-      // Wait for Tailwind CDN to fully load before configuring
-      (function() {
-        function configureTailwind() {
-          if (typeof tailwind !== 'undefined') {
-            try {
-              tailwind.config = tailwind.config || {};
-              tailwind.config.darkMode = 'class';
-              return true;
-            } catch(e) {
-              console.warn('Tailwind config error:', e);
-            }
+      // This runs after Tailwind CDN loads via onload event
+      // Fallback: Try to configure after a delay if onload didn't work
+      setTimeout(function() {
+        try {
+          if (typeof tailwind !== 'undefined' && tailwind.config) {
+            tailwind.config.darkMode = 'class';
           }
-          return false;
+        } catch(e) {
+          // Silently fail - dark mode will still work via class attributes
         }
-        
-        // Try immediately
-        if (!configureTailwind()) {
-          // If not ready, wait a bit and try again
-          setTimeout(function() {
-            if (!configureTailwind()) {
-              // Try on DOMContentLoaded as last resort
-              document.addEventListener('DOMContentLoaded', configureTailwind);
-            }
-          }, 100);
-        }
-      })();
+      }, 500);
     </script>
     <script>
       // Diagnostic logging
