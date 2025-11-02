@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 const tips = [
     "Carry a reusable water bottle to reduce plastic waste.",
@@ -11,8 +11,23 @@ const tips = [
     "Switch to rechargeable batteries to reduce hazardous waste."
 ];
 
+const PauseIcon: React.FC = () => (
+    <svg className="w-4 h-4 text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 9v6m4-6v6" />
+    </svg>
+);
+
+const PlayIcon: React.FC = () => (
+     <svg className="w-4 h-4 text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+    </svg>
+);
+
+
 const TipsCarousel: React.FC = () => {
     const [currentIndex, setCurrentIndex] = useState(0);
+    const [isPlaying, setIsPlaying] = useState(true);
+    const timerRef = useRef<number | null>(null);
 
     const handleNext = () => {
         setCurrentIndex((prevIndex) => (prevIndex + 1) % tips.length);
@@ -22,32 +37,51 @@ const TipsCarousel: React.FC = () => {
         setCurrentIndex((prevIndex) => (prevIndex - 1 + tips.length) % tips.length);
     };
 
+    const togglePlay = () => {
+        setIsPlaying(prev => !prev);
+    }
+
     useEffect(() => {
-        const timer = setInterval(() => {
-            handleNext();
-        }, 5000); 
-        return () => clearInterval(timer);
-    }, []);
+        if (isPlaying) {
+            timerRef.current = window.setInterval(() => {
+                handleNext();
+            }, 5000); 
+        } else {
+             if (timerRef.current) {
+                clearInterval(timerRef.current);
+            }
+        }
+        return () => {
+            if (timerRef.current) {
+                clearInterval(timerRef.current);
+            }
+        };
+    }, [isPlaying]);
 
     return (
-        <div className="bg-white rounded-2xl shadow-xl p-4 relative overflow-hidden">
+        <div className="bg-white rounded-2xl shadow-xl p-4 relative overflow-hidden" role="region" aria-roledescription="carousel" aria-label="Eco tips">
             <div className="flex items-center mb-2">
-                 <svg className="w-6 h-6 text-green-500 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                 <svg className="w-6 h-6 text-green-500 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                 </svg>
                 <h3 className="font-bold text-md text-gray-800">Eco Tip of the Day</h3>
             </div>
             
-            <p className="text-gray-600 text-sm h-10 flex items-center">{tips[currentIndex]}</p>
+            <div aria-live="polite" aria-atomic="true">
+                 <p className="text-gray-600 text-sm h-10 flex items-center">{tips[currentIndex]}</p>
+            </div>
 
             <div className="absolute bottom-2 right-2 flex items-center space-x-1">
+                <button onClick={togglePlay} className="p-1 rounded-full bg-gray-100 hover:bg-gray-200" aria-label={isPlaying ? 'Pause tips carousel' : 'Play tips carousel'}>
+                    {isPlaying ? <PauseIcon /> : <PlayIcon />}
+                </button>
                 <button onClick={handlePrev} className="p-1 rounded-full bg-gray-100 hover:bg-gray-200" aria-label="Previous tip">
-                    <svg className="w-4 h-4 text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="w-4 h-4 text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                     </svg>
                 </button>
                 <button onClick={handleNext} className="p-1 rounded-full bg-gray-100 hover:bg-gray-200" aria-label="Next tip">
-                    <svg className="w-4 h-4 text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="w-4 h-4 text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                     </svg>
                 </button>

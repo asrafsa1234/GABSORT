@@ -42,8 +42,8 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ onImageUpload, isLoading 
         return (
             <div className="relative flex flex-col items-center justify-center p-4 border-2 border-dashed border-gray-300 rounded-lg bg-white min-h-[280px]">
                 <img src={imagePreviewUrl} alt="Preview" className="max-h-48 w-auto object-contain rounded-md opacity-40" />
-                <div className="absolute inset-0 bg-white bg-opacity-60 flex flex-col items-center justify-center text-center">
-                    <div className="w-12 h-12 border-4 border-t-green-500 border-gray-200 rounded-full animate-spin"></div>
+                <div className="absolute inset-0 bg-white bg-opacity-60 flex flex-col items-center justify-center text-center" role="status">
+                    <div className="w-12 h-12 border-4 border-t-green-500 border-gray-200 rounded-full animate-spin" aria-hidden="true"></div>
                     <p className="mt-4 text-gray-800 font-semibold">Analyzing your item...</p>
                     <p className="text-sm text-gray-600">This may take a moment.</p>
                 </div>
@@ -59,6 +59,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ onImageUpload, isLoading 
                 ref={fileInputRef}
                 onChange={handleFileChange}
                 className="hidden"
+                aria-label="Upload Image"
             />
              <div className="text-center">
                  <svg className="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">

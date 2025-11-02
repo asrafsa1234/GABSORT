@@ -8,8 +8,10 @@ const Welcome: React.FC<WelcomeProps> = ({ onGetStarted }) => {
     return (
         <div className="flex flex-col items-center justify-center h-screen text-center p-4 bg-gray-50">
             <div className="max-w-md">
-                 <h1 className="text-4xl font-bold text-gray-800">Welcome to</h1>
-                 <h2 className="text-5xl font-extrabold text-green-600">EcoScan</h2>
+                 <h1 className="text-4xl font-bold text-gray-800">
+                    Welcome to 
+                    <span className="text-5xl font-extrabold text-green-600 block mt-1">EcoScan</span>
+                 </h1>
                  <p className="mt-4 text-lg text-gray-600">
                     Snap a photo of any item, and we'll tell you if it's recyclable and how to dispose of it responsibly.
                  </p>

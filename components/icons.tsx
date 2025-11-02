@@ -11,6 +11,8 @@ const iconProps = {
   strokeWidth: "2",
   strokeLinecap: "round",
   strokeLinejoin: "round",
+  "aria-hidden": "true",
+  focusable: "false",
 } as const;
 
 export const ScanIcon: React.FC<{className?: string}> = ({ className }) => (

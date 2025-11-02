@@ -79,9 +79,9 @@ const Map: React.FC = () => {
 
     if (loading) {
         return (
-            <div className="text-center p-8 bg-white rounded-lg shadow-md">
+            <div className="text-center p-8 bg-white rounded-lg shadow-md" role="status">
                 <p className="text-gray-600">Fetching your location...</p>
-                 <div className="w-8 h-8 border-2 border-t-transparent border-green-500 rounded-full animate-spin mx-auto mt-4"></div>
+                 <div className="w-8 h-8 border-2 border-t-transparent border-green-500 rounded-full animate-spin mx-auto mt-4" aria-hidden="true"></div>
             </div>
         );
     }
@@ -111,9 +111,9 @@ const Map: React.FC = () => {
             <h3 className="text-lg font-bold text-gray-700">Nearby Recycling Centers</h3>
 
             {sortedCenters.length > 0 ? (
-                <div className="space-y-3">
+                <ul className="space-y-3">
                     {sortedCenters.map((center, index) => (
-                        <div key={center.id} 
+                        <li key={center.id} 
                              className={`bg-white rounded-lg shadow-md p-4 border-l-4 ${index === 0 ? 'border-green-500' : 'border-transparent'}`}>
                             <div className="flex justify-between items-center">
                                 <div>
@@ -125,9 +125,9 @@ const Map: React.FC = () => {
                                     <p className="text-xs text-gray-500">away</p>
                                 </div>
                             </div>
-                        </div>
+                        </li>
                     ))}
-                </div>
+                </ul>
             ) : (
                  <div className="text-center p-8 text-gray-500 bg-white rounded-lg shadow-md">
                     <p>Could not find any recycling centers.</p>

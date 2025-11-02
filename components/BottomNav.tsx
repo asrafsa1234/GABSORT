@@ -27,6 +27,7 @@ const BottomNav: React.FC<BottomNavProps> = ({ activeView, setView }) => {
                                 ? 'text-green-600'
                                 : 'text-gray-500 hover:text-green-600'
                             }`}
+                        aria-current={activeView === item.name ? 'page' : undefined}
                     >
                         <item.icon className="w-6 h-6 mb-1" />
                         <span>{item.label}</span>

@@ -11,7 +11,7 @@ interface ResultDisplayProps {
 const ResultDisplay: React.FC<ResultDisplayProps> = ({ result, onScanAgain, imageUri }) => {
     const { itemName, recyclable, recyclabilityScore, instructions, alternatives, ecoFriendlyTip } = result;
 
-    const scoreColor = recyclabilityScore > 75 ? 'text-green-500' : recyclabilityScore > 40 ? 'text-yellow-500' : 'text-red-500';
+    const scoreColor = recyclabilityScore > 75 ? 'text-green-700' : recyclabilityScore > 40 ? 'text-yellow-600' : 'text-red-600';
 
     return (
         <div className="bg-white rounded-lg shadow-lg p-6 animate-fade-in space-y-4">
@@ -32,8 +32,15 @@ const ResultDisplay: React.FC<ResultDisplayProps> = ({ result, onScanAgain, imag
             </div>
 
             <div>
-                <h3 className="font-semibold text-gray-700">Recyclability Score</h3>
-                <div className="w-full bg-gray-200 rounded-full h-2.5 my-2">
+                <h3 className="font-semibold text-gray-700" id="recyclability-score-label">Recyclability Score</h3>
+                <div 
+                    className="w-full bg-gray-200 rounded-full h-2.5 my-2"
+                    role="progressbar"
+                    aria-valuenow={recyclabilityScore}
+                    aria-valuemin={0}
+                    aria-valuemax={100}
+                    aria-labelledby="recyclability-score-label"
+                >
                     <div className="bg-green-600 h-2.5 rounded-full" style={{ width: `${recyclabilityScore}%` }}></div>
                 </div>
                 <p className={`text-center font-bold text-xl ${scoreColor}`}>{recyclabilityScore}/100</p>
