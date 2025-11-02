@@ -136,3 +136,18 @@ export const MoonIcon: React.FC<IconComponentProps> = ({ className, style }) => 
         <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
     </svg>
 );
+
+export const XIcon: React.FC<IconComponentProps> = ({ className, style }) => (
+    <svg {...iconProps} className={className} style={style}>
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+    </svg>
+);
+
+export const ImageIcon: React.FC<IconComponentProps> = ({ className, style }) => (
+    <svg {...iconProps} className={className} style={style}>
+        <rect width="18" height="18" x="3" y="3" rx="2" ry="2"></rect>
+        <circle cx="9" cy="9" r="2"></circle>
+        <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"></path>
+    </svg>
+);
