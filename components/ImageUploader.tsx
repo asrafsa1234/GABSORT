@@ -1,5 +1,6 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { CameraIcon, RecycleIcon } from './icons';
+import CameraView from './CameraView';
 
 interface ImageUploaderProps {
     onImageUpload: (base64: string, mimeType: string) => void;
@@ -9,12 +10,14 @@ interface ImageUploaderProps {
 
 const ImageUploader: React.FC<ImageUploaderProps> = ({ onImageUpload, isLoading = false, imagePreviewUrl }) => {
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const [isCameraOpen, setIsCameraOpen] = useState(false);
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (file) {
             processFile(file);
         }
+        setIsCameraOpen(false);
     };
 
     const processFile = (file: File) => {
@@ -34,8 +37,13 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ onImageUpload, isLoading 
         };
         reader.readAsDataURL(file);
     };
+    
+    const handleCapture = (base64: string, mimeType: string) => {
+        onImageUpload(base64, mimeType);
+        setIsCameraOpen(false);
+    };
 
-    const handleAreaClick = () => {
+    const handleSelectFile = () => {
         fileInputRef.current?.click();
     };
 
@@ -59,10 +67,16 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ onImageUpload, isLoading 
 
     return (
         <>
+            {isCameraOpen && (
+                <CameraView
+                    onCapture={handleCapture}
+                    onClose={() => setIsCameraOpen(false)}
+                    onSelectFile={handleSelectFile}
+                />
+            )}
             <input
                 type="file"
                 accept="image/*"
-                capture="environment"
                 ref={fileInputRef}
                 onChange={handleFileChange}
                 className="hidden"
@@ -70,14 +84,14 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ onImageUpload, isLoading 
             />
             <button
                 type="button"
-                onClick={handleAreaClick}
+                onClick={() => setIsCameraOpen(true)}
                 className="w-full flex flex-col items-center justify-center p-4 border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-green-400 transition-colors duration-300 rounded-2xl bg-white dark:bg-gray-800 min-h-[300px] shadow-sm text-center focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-gray-900 focus:ring-green-500"
             >
                 <div className="w-20 h-20 bg-green-100 dark:bg-green-900/50 rounded-full flex items-center justify-center mb-4">
                     <CameraIcon className="w-10 h-10 text-green-600 dark:text-green-400" />
                 </div>
                 <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300">Tap to capture or upload</h3>
-                <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">Camera Preview</p>
+                <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">Use your camera or select a file</p>
             </button>
         </>
     );
