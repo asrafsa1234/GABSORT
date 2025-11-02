@@ -9,6 +9,7 @@ export const analyzeImage = async (base64ImageData: string, mimeType: string): P
     const mockResult: AnalysisResult = {
         itemName: "Generic Recyclable Item",
         recyclable: "Yes",
+        category: "Recyclable",
         recyclabilityScore: 85,
         instructions: "This item can be recycled. Please clean it before placing in the recycling bin. Remove any labels or caps if applicable.",
         alternatives: [
