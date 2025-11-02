@@ -7,11 +7,35 @@
     <script>
       // Configure Tailwind CSS to use the 'class' strategy for dark mode.
       // This must be done before the main Tailwind script is loaded.
-      tailwind.config = {
-        darkMode: 'class',
+      if (typeof tailwind !== 'undefined') {
+        tailwind.config = {
+          darkMode: 'class',
+        }
       }
     </script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      // Diagnostic logging
+      console.log('HTML loaded, root element:', document.getElementById('root'));
+      
+      // Track script loading errors
+      window.addEventListener('error', function(e) {
+        console.error('Global error:', e.message, 'at', e.filename, 'line', e.lineno);
+        var root = document.getElementById('root');
+        if (root && root.innerHTML === '') {
+          root.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100vh; flex-direction: column; padding: 20px; color: white; font-family: system-ui; background: #1f2937;"><h1 style="font-size: 24px; margin-bottom: 10px;">Error Loading App</h1><p style="color: #9ca3af;">Check console for details</p><p style="font-size: 12px; margin-top: 20px; color: #6b7280;">' + e.message + '</p></div>';
+        }
+      }, true);
+      
+      // Fallback: Show message if React doesn't load after 3 seconds
+      setTimeout(function() {
+        var root = document.getElementById('root');
+        if (root && root.innerHTML === '') {
+          console.warn('React did not load after 3 seconds');
+          root.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100vh; flex-direction: column; padding: 20px; color: white; font-family: system-ui; background: #1f2937;"><h1 style="font-size: 24px; margin-bottom: 10px;">Loading...</h1><p style="color: #9ca3af;">If this persists, the JavaScript bundle may not be loading.</p><p style="font-size: 12px; margin-top: 20px; color: #6b7280;">Check Network tab for failed requests.</p></div>';
+        }
+      }, 3000);
+    </script>
   </head>
   <body class="bg-gray-100 dark:bg-gray-900">
     <div id="root"></div>
